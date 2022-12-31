@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers
 from data import views
-from data.views import CategroryAddViewSet, CategoryViewSet, PostAddViewSet, PostViewSet
+from data.views import CategroryAddViewSet, CategoryViewSet, PostAddViewSet, PostViewSet,PostDetail
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
@@ -17,4 +17,5 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('add-category', CategroryAddViewSet.as_view() , name='add-category'),
     path('add-post', PostAddViewSet.as_view() , name='add-category'),
+    path('post/<int:pk>/', PostDetail.as_view() , name='add-category'),
 ]

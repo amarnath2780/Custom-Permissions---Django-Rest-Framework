@@ -8,6 +8,23 @@ from .models import Post, Category
 from .serializers import PostSerializer , CategorySerializer
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import BasePermission , SAFE_METHODS
+from rest_framework import generics
+
+
+class PostUserEditPermission(BasePermission):
+    message = 'Only the author can edit the post'
+
+    def has_object_permission(self, request, view, obj):
+        
+        if request.method in SAFE_METHODS:
+            return True
+        else: 
+            return obj.author == request.user
+
+    
+
+
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
@@ -31,6 +48,12 @@ class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAdminUser]
+
+
+class PostDetail(generics.RetrieveUpdateDestroyAPIView ,PostUserEditPermission):
+    permission_classes = [PostUserEditPermission]
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
 
 
 class CategroryAddViewSet(APIView):
